@@ -406,7 +406,7 @@ export function Terminal() {
           if ((e.target as HTMLElement).closest("a,button")) return;
           inputRef.current?.focus({ preventScroll: true });
         }}
-        className="min-h-0 flex-1 overflow-y-auto px-3 py-2 text-[0.8125rem] leading-relaxed"
+        className="term-body min-h-0 flex-1 overflow-y-auto px-3 py-2 leading-relaxed"
       >
         <div role="log" aria-live="polite" aria-label="Terminal output" className="flex flex-col gap-1.5">
           {entries.map((entry) =>

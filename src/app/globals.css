@@ -13,23 +13,33 @@
 :root {
   color-scheme: dark;
 
-  --bg: #011221;        /* editor ground */
-  --panel: #011627;     /* side panels, tab bar */
-  --rail: #010c15;      /* activity bar, title bar */
-  --raise: #01273f;     /* hover / selected row */
-  --line: #1e2d3d;      /* every divider */
-  --fg: #e5e9f0;
-  --muted: #607b96;     /* secondary text, comments */
-  --faint: #3c5064;     /* tertiary, line numbers */
+  --bg: #0a2036;        /* editor ground */
+  --panel: #07192a;     /* side panels, tab bar */
+  --rail: #050f1a;      /* activity bar, title bar */
+  --raise: #15375a;     /* hover / selected row */
+  --line: #1e3e5c;      /* every divider */
+  --fg: #e8eef5;
+  --muted: #8ba6c1;     /* secondary text, comments (6.5:1 on --bg) */
+  --faint: #6e8da8;     /* tertiary, line numbers (4.7:1 on --bg) */
 
-  --amber: #fea55f;     /* active tab, primary action */
-  --amber-ink: #1a1206;
-  --mint: #43d9ad;      /* strings, live, success */
-  --purple: #c98bdf;
-  --blue: #4d9ee6;
-  --rose: #e99287;
+  --amber: #f6a862;     /* active tab, primary action */
+  --amber-ink: #180f04;
+  --mint: #56d6ae;      /* strings, live, success */
+  --purple: #cf9ae2;
+  --blue: #5fa8ea;
+  --rose: #ed9a90;
 
-  --sel: #1d3b53;
+  --sel: #1d4a70;
+  --scrim: rgb(2 10 18 / 0.66);   /* mobile drawer backdrop */
+  --shadow: rgb(0 0 0 / 0.5);     /* cannot be black on a light ground */
+
+  /* Settings defaults. The bootstrap overwrites these inline before first paint
+     when the visitor has changed them; see content/settings.ts. */
+  --ui-font-size: 0.9375rem;
+  --ui-line-height: 1.65;
+  --term-font-size: 0.8125rem;
+  --doc-pad: 2.5rem;
+  --doc-gap: 1.5rem;
 
   --rail-w: 3.25rem;
   --panel-w: 16.5rem;
@@ -63,8 +73,8 @@ body {
   background: var(--bg);
   color: var(--fg);
   font-family: var(--font-mono);
-  font-size: 0.9375rem;
-  line-height: 1.65;
+  font-size: var(--ui-font-size);
+  line-height: var(--ui-line-height);
   -webkit-font-smoothing: antialiased;
   overflow: hidden;
 }
@@ -163,7 +173,7 @@ body {
     transform: translateX(-102%);
     visibility: hidden;
     transition: transform 220ms ease, visibility 220ms;
-    box-shadow: 0 0 2.5rem rgb(0 0 0 / 0.5);
+    box-shadow: 0 0 2.5rem var(--shadow);
   }
 
   [data-drawer="open"] .side {
@@ -175,7 +185,7 @@ body {
     position: fixed;
     inset: 0;
     z-index: 40;
-    background: rgb(1 6 14 / 0.6);
+    background: var(--scrim);
   }
 }
 
@@ -190,15 +200,15 @@ body {
 /* Readable column for prose pages. */
 .doc {
   max-width: 54rem;
-  padding: 2.5rem 1.25rem 5rem;
+  padding: var(--doc-pad) 1.25rem 5rem;
   display: flex;
   flex-direction: column;
-  gap: 1.5rem;
+  gap: var(--doc-gap);
 }
 
 @media (min-width: 768px) {
   .doc {
-    padding: 3rem 3rem 6rem;
+    padding: var(--doc-pad) 3rem 6rem;
   }
 }
 
@@ -294,7 +304,7 @@ body {
 /* ---------------------------------------------------------- code blocks */
 
 .code {
-  font-size: 0.8125rem;
+  font-size: calc(var(--ui-font-size) - 0.125rem);
   line-height: 1.75;
   counter-reset: line;
 }
@@ -327,6 +337,10 @@ body {
 .t-punc { color: var(--muted); }
 
 /* ------------------------------------------------------------- terminal */
+
+.term-body {
+  font-size: var(--term-font-size);
+}
 
 .term-line {
   white-space: pre-wrap;
@@ -370,7 +384,69 @@ body {
   }
 }
 
+/* ------------------------------------------------------------- settings
+
+   Each rule below is the thing a switch in settings.json actually does. The
+   attributes are written onto <html> by the bootstrap and by settings-state. */
+
+/* editor.fontLigatures */
+:root[data-ligatures="off"] body {
+  font-variant-ligatures: none;
+  font-feature-settings: "calt" 0, "liga" 0;
+}
+
+/* editor.lineNumbers — drop the gutter column entirely, do not just hide it */
+:root[data-line-numbers="off"] .code .ln {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+:root[data-line-numbers="off"] .code .ln::before {
+  content: none;
+}
+
+/* editor.wordWrap */
+:root[data-word-wrap="off"] .code {
+  overflow-x: auto;
+}
+
+:root[data-word-wrap="off"] .code .ln > span {
+  white-space: pre;
+  overflow-wrap: normal;
+}
+
+/* workbench.density */
+:root[data-density="compact"] {
+  --doc-pad: 1.5rem;
+  --doc-gap: 1rem;
+}
+
+/* workbench.reduceMotion — an explicit choice, on top of the OS preference */
+:root[data-reduce-motion="on"] .rise {
+  animation: none;
+}
+
+:root[data-reduce-motion="on"] .caret {
+  animation: none;
+}
+
+:root[data-reduce-motion="on"] .side {
+  transition: none;
+}
+
+/* workbench.sideBarLocation — desktop only; on phones it is a left drawer */
+@media (min-width: 768px) {
+  :root[data-sidebar="right"] .side {
+    order: 3;
+    border-right: 0;
+    border-left: 1px solid var(--line);
+  }
+}
+
 /* Glow behind the hero panel, as in the reference. */
+:root[data-appearance="light"] .glow {
+  opacity: 0.18;
+}
+
 .glow {
   position: absolute;
   border-radius: 999px;

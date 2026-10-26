@@ -6,7 +6,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "themes:check": "node --experimental-strip-types scripts/check-themes.mjs"
   },
   "dependencies": {
     "next": "16.4.2",

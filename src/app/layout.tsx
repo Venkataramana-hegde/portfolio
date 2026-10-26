@@ -2,7 +2,8 @@ import type { Metadata, Viewport } from "next";
 import { Fira_Code } from "next/font/google";
 import { Shell } from "@/components/ide/Shell";
 import { education, person, site } from "@/content/profile";
-import { palette } from "@/theme";
+import { Bootstrap } from "@/components/ide/Bootstrap";
+import { defaultThemeId, themeById } from "@/content/themes";
 import "./globals.css";
 
 // One family, the editor's own: Fira Code, with ligatures on in code blocks.
@@ -55,8 +56,9 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: palette.bg,
-  colorScheme: "dark",
+  themeColor: themeById(defaultThemeId).tokens.bg,
+  // Both exist now, and the bootstrap sets the real one on <html>.
+  colorScheme: "dark light",
 };
 
 const personJsonLd = {
@@ -75,8 +77,9 @@ const personJsonLd = {
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
-    <html lang="en" className={fira.variable}>
+    <html lang="en" className={fira.variable} data-theme={defaultThemeId} data-appearance="dark">
       <head>
+        <Bootstrap />
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(personJsonLd).replace(/</g, "\\u003c") }}

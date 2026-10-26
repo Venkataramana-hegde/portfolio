@@ -40,6 +40,7 @@ export const files: WorkspaceFile[] = [
       blurb: p.tagline,
     }),
   ),
+  { name: "settings.json", dir: ".vscode", href: "/settings", lang: "json", cmd: "settings", title: "Settings", blurb: "Workspace settings that really apply" },
   { name: "resume.pdf", href: "/venkataramana-hegde-resume.pdf", lang: "pdf", cmd: "resume", title: "Résumé", blurb: "One-page PDF", external: true },
 ];
 
@@ -67,6 +68,7 @@ export const findFile = (query: string) => {
 export const tree = [
   { dir: "src", items: files.filter((f) => f.dir === "src") },
   { dir: "src/projects", items: files.filter((f) => f.dir === "src/projects") },
+  { dir: ".vscode", items: files.filter((f) => f.dir === ".vscode") },
 ];
 
 export const rootFiles = files.filter((f) => !f.dir);
@@ -82,10 +84,10 @@ export const langLabel: Record<Lang, string> = {
 
 /** File-type marks, coloured the way an editor badges files. */
 export const langMark: Record<Lang, { text: string; color: string }> = {
-  tsx: { text: "TS", color: "#4D9EE6" },
-  ts: { text: "TS", color: "#3178C6" },
-  md: { text: "MD", color: "#43D9AD" },
-  log: { text: "LOG", color: "#C98BDF" },
-  json: { text: "{ }", color: "#FEA55F" },
-  pdf: { text: "PDF", color: "#E99287" },
+  tsx: { text: "TS", color: "var(--blue)" },
+  ts: { text: "TS", color: "var(--blue)" },
+  md: { text: "MD", color: "var(--mint)" },
+  log: { text: "LOG", color: "var(--purple)" },
+  json: { text: "{ }", color: "var(--amber)" },
+  pdf: { text: "PDF", color: "var(--rose)" },
 };

@@ -10,12 +10,19 @@ import { CloseIcon } from "./Icons";
 import { SearchPanel } from "./SearchPanel";
 import { SourceControl } from "./SourceControl";
 import { TerminalPane } from "./TerminalPane";
+import { SettingsProvider } from "./settings-state";
+import { ThemeProvider } from "./theme-state";
+import { ApiPlayground, DatabaseExplorer, IdeSettings, PortfolioAssistant } from "./WorkspaceTools";
 
 const panelTitles = {
   explorer: "Explorer",
   search: "Search",
   git: "Source control",
   extensions: "Extensions",
+  api: "API playground",
+  database: "Database explorer",
+  settings: "IDE settings",
+  assistant: "AI assistant",
 } as const;
 
 function SidePanel() {
@@ -39,6 +46,10 @@ function SidePanel() {
         {panel === "search" && <SearchPanel />}
         {panel === "git" && <SourceControl />}
         {panel === "extensions" && <Extensions />}
+        {panel === "api" && <ApiPlayground />}
+        {panel === "database" && <DatabaseExplorer />}
+        {panel === "settings" && <IdeSettings />}
+        {panel === "assistant" && <PortfolioAssistant />}
       </div>
     </aside>
   );
@@ -87,8 +98,12 @@ function Workbench({ children }: { children: React.ReactNode }) {
 
 export function Shell({ children }: { children: React.ReactNode }) {
   return (
-    <IdeProvider>
-      <Workbench>{children}</Workbench>
-    </IdeProvider>
+    <ThemeProvider>
+      <SettingsProvider>
+        <IdeProvider>
+          <Workbench>{children}</Workbench>
+        </IdeProvider>
+      </SettingsProvider>
+    </ThemeProvider>
   );
 }

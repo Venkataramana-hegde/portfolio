@@ -2,13 +2,17 @@
 
 import { usePathname, useRouter } from "next/navigation";
 import { createContext, use, useCallback, useEffect, useMemo, useRef, useState, useSyncExternalStore } from "react";
-import { fileForPath, files, navFiles, type WorkspaceFile } from "@/content/workspace";
+import { eventToChord } from "@/content/keybindings";
+import { fileForPath, files, findFile, navFiles, type WorkspaceFile } from "@/content/workspace";
+import { commandForChord } from "./keybindings-state";
 
-export type PanelId = "explorer" | "search" | "git" | "extensions";
+export type PanelId = "explorer" | "search" | "git" | "extensions" | "api" | "database" | "settings" | "assistant";
 
 type IdeApi = {
   panel: PanelId;
   setPanel: (p: PanelId) => void;
+  /** Selects a panel and makes sure it is actually on screen. */
+  showPanel: (p: PanelId) => void;
   sideOpen: boolean;
   toggleSide: () => void;
   drawerOpen: boolean;
@@ -131,30 +135,56 @@ export function IdeProvider({ children }: { children: React.ReactNode }) {
     return list;
   }, [extra, current]);
 
+  const showPanel = useCallback((p: PanelId) => {
+    setPanel(p);
+    if (isDesktopNow()) setSideOpen(true);
+    else setDrawerOpen(true);
+  }, []);
+
+  // Every shortcut resolves through the rebindable table in content/keybindings,
+  // so the shortcuts panel and the real behaviour cannot drift apart.
   useKeydown((e) => {
-    const mod = e.metaKey || e.ctrlKey;
-    const key = e.key.toLowerCase();
-    if (mod && key === "k") {
-      e.preventDefault();
-      setPaletteOpen(true);
-    } else if (mod && e.key === "`") {
-      e.preventDefault();
-      toggleTerminal();
-    } else if (mod && e.shiftKey && key === "e") {
-      e.preventDefault();
-      setPanel("explorer");
-      if (!isDesktopNow()) setDrawerOpen(true);
-    } else if (mod && key === "b") {
-      e.preventDefault();
-      toggleSide();
-    } else if (e.key === "Escape") {
+    if (e.key === "Escape") {
       setDrawerOpen(false);
+      return;
+    }
+    const command = commandForChord(eventToChord(e));
+    if (!command) return;
+    e.preventDefault();
+    switch (command) {
+      case "palette.open":
+        setPaletteOpen(true);
+        break;
+      case "terminal.toggle":
+        toggleTerminal();
+        break;
+      case "sideBar.toggle":
+        toggleSide();
+        break;
+      case "settings.open": {
+        const file = findFile("settings");
+        if (file) open(file);
+        break;
+      }
+      case "panel.explorer":
+        showPanel("explorer");
+        break;
+      case "panel.search":
+        showPanel("search");
+        break;
+      case "panel.scm":
+        showPanel("git");
+        break;
+      case "panel.extensions":
+        showPanel("extensions");
+        break;
     }
   });
 
   const api: IdeApi = {
     panel,
     setPanel,
+    showPanel,
     sideOpen,
     toggleSide,
     drawerOpen,

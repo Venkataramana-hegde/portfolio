@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { extensions, type Extension } from "@/content/profile";
 import { CheckIcon, SearchIcon, StarIcon } from "./Icons";
+import { ThemeMarketplace } from "./ThemeMarketplace";
 
 /* Skills, shown the way an editor shows installed extensions. The numbers are
    real: `projects` counts the things on this site that use it, and `since` is
@@ -20,7 +21,7 @@ function Stars({ level }: { level: Extension["level"] }) {
   );
 }
 
-export function Extensions() {
+function Skills() {
   const [query, setQuery] = useState("");
   const [category, setCategory] = useState<(typeof categories)[number]>("All");
   const [openId, setOpenId] = useState<string | null>(null);
@@ -129,6 +130,40 @@ export function Extensions() {
           </li>
         )}
       </ul>
+    </div>
+  );
+}
+
+/* The Extensions panel holds both halves of a real marketplace: what is already
+   installed (skills, which cannot be installed or removed because they are
+   facts) and what you can install (themes, which genuinely install). */
+
+const sections = ["Skills", "Themes"] as const;
+
+export function Extensions() {
+  const [section, setSection] = useState<(typeof sections)[number]>("Skills");
+
+  return (
+    <div className="flex flex-col">
+      <div role="tablist" aria-label="Marketplace section" className="flex shrink-0 border-b border-line">
+        {sections.map((s) => (
+          <button
+            key={s}
+            type="button"
+            role="tab"
+            aria-selected={section === s}
+            onClick={() => setSection(s)}
+            className={`relative flex-1 py-2 text-[0.75rem] transition-colors ${
+              section === s ? "text-fg" : "text-muted hover:text-fg"
+            }`}
+          >
+            {s}
+            {section === s && <span className="absolute inset-x-3 bottom-0 h-0.5 rounded-t bg-amber" aria-hidden="true" />}
+          </button>
+        ))}
+      </div>
+
+      <div className="pt-3">{section === "Skills" ? <Skills /> : <ThemeMarketplace />}</div>
     </div>
   );
 }

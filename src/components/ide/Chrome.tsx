@@ -15,7 +15,9 @@ import {
   TerminalIcon,
   WarnIcon,
 } from "./Icons";
+import { BracesIcon, DatabaseIcon, GearIcon, SparkIcon } from "./Icons";
 import { Clock } from "./Clock";
+import { useSettings } from "./settings-state";
 
 /* ------------------------------------------------------------- title bar */
 
@@ -63,10 +65,14 @@ const panels: { id: PanelId; label: string; hint: string; Icon: typeof FilesIcon
   { id: "search", label: "Search", hint: "Search everything", Icon: SearchIcon },
   { id: "git", label: "Source control", hint: "Experience as commits", Icon: BranchIcon },
   { id: "extensions", label: "Extensions", hint: "Skills", Icon: BlocksIcon },
+  { id: "api", label: "API playground", hint: "Try an endpoint", Icon: BracesIcon },
+  { id: "database", label: "Database explorer", hint: "Inspect sample data", Icon: DatabaseIcon },
+  { id: "settings", label: "IDE settings", hint: "Customize the workspace", Icon: GearIcon },
+  { id: "assistant", label: "AI assistant", hint: "Ask about my work", Icon: SparkIcon },
 ];
 
 export function ActivityBar() {
-  const { panel, setPanel, sideOpen, toggleSide, terminalOpen, toggleTerminal } = useIde();
+  const { panel, showPanel, sideOpen, toggleSide, terminalOpen, toggleTerminal } = useIde();
   return (
     <nav aria-label="Workspace panels" className="rail flex flex-col items-center border-r border-line bg-rail py-1">
       {panels.map(({ id, label, hint, Icon }) => {
@@ -78,7 +84,7 @@ export function ActivityBar() {
             title={`${label} — ${hint}`}
             aria-label={`${label}: ${hint}`}
             aria-pressed={active}
-            onClick={() => (active ? toggleSide() : setPanel(id))}
+            onClick={() => (active ? toggleSide() : showPanel(id))}
             className={`relative grid h-12 w-full place-items-center transition-colors ${
               active ? "text-fg" : "text-faint hover:text-muted"
             }`}
@@ -155,6 +161,9 @@ export function Tabs() {
 
 export function StatusBar() {
   const { current, toggleTerminal, setPanel, terminalOpen } = useIde();
+  const { settings } = useSettings();
+  // workbench.statusBar hides the strip outright, the way the real setting does.
+  if (!settings["workbench.statusBar"]) return null;
   return (
     <footer className="flex h-7 shrink-0 items-center gap-0.5 overflow-x-auto border-t border-line bg-rail px-1 text-[0.6875rem] text-muted [scrollbar-width:none]">
       <button

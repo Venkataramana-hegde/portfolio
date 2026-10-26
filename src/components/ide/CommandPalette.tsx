@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { person } from "@/content/profile";
 import { files, filePath, type WorkspaceFile } from "@/content/workspace";
 import { useIde } from "./ide-state";
-import { BlocksIcon, BranchIcon, ExternalIcon, FileMark, SearchIcon, TerminalIcon } from "./Icons";
+import { BlocksIcon, BranchIcon, BracesIcon, DatabaseIcon, ExternalIcon, FileMark, GearIcon, SearchIcon, SparkIcon, TerminalIcon } from "./Icons";
 
 type Action = {
   id: string;
@@ -54,6 +54,10 @@ function Palette() {
     { id: "p-search", label: "Search everything", hint: "Find any line on the site", icon: <SearchIcon className="mx-1 size-4" />, run: () => setPanel("search") },
     { id: "p-git", label: "Show experience as commits", hint: "Source control panel", icon: <BranchIcon className="mx-1 size-4" />, run: () => setPanel("git") },
     { id: "p-ext", label: "Show skills", hint: "Extensions panel", icon: <BlocksIcon className="mx-1 size-4" />, run: () => setPanel("extensions") },
+    { id: "p-api", label: "Open API playground", hint: "Try a request", icon: <BracesIcon className="mx-1 size-4" />, run: () => setPanel("api") },
+    { id: "p-db", label: "Open database explorer", hint: "Inspect sample tables", icon: <DatabaseIcon className="mx-1 size-4" />, run: () => setPanel("database") },
+    { id: "p-settings", label: "Open IDE settings", hint: "Customize the workspace", icon: <GearIcon className="mx-1 size-4" />, run: () => setPanel("settings") },
+    { id: "p-ai", label: "Ask the AI assistant", hint: "About my work", icon: <SparkIcon className="mx-1 size-4" />, run: () => setPanel("assistant") },
     { id: "p-term", label: "Toggle terminal", hint: "Ctrl+`", icon: <TerminalIcon className="mx-1 size-4" />, run: toggleTerminal },
     {
       id: "p-copy",
