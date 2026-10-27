@@ -52,6 +52,19 @@ export type ThemeTokens = {
   shadow: string;
 };
 
+/* Syntax colours, separate from the UI tokens because real editor themes do not
+   reuse their chrome colours for code. A theme that omits these inherits the UI
+   colours, which is how every theme here behaved before the split. */
+export type SyntaxTokens = {
+  synKey: string;
+  synStr: string;
+  synFn: string;
+  synNum: string;
+  synProp: string;
+  synCom: string;
+  synType: string;
+};
+
 export type Theme = {
   id: string;
   name: string;
@@ -60,11 +73,89 @@ export type Theme = {
   appearance: Appearance;
   blurb: string;
   tokens: ThemeTokens;
+  /** Explicit syntax colours; anything omitted falls back to a UI token. */
+  syntax?: Partial<SyntaxTokens>;
 };
 
 /* ------------------------------------------------------------------ dark */
 
 export const themes: Theme[] = [
+  {
+    id: "vscode-dark-modern",
+    name: "Dark Modern",
+    author: "Microsoft · VS Code default",
+    appearance: "dark",
+    blurb: "VS Code as it ships. The committed default here too.",
+    tokens: {
+      bg: "#1f1f1f",
+      // VS Code paints the side bar, activity bar, title bar and status bar the
+      // same colour and separates them with borders rather than luminance.
+      panel: "#181818",
+      rail: "#181818",
+      raise: "#2a2d2e",
+      line: "#2b2b2b",
+      fg: "#cccccc",
+      muted: "#9d9d9d",
+      // VS Code uses #6e7681 here, which is 3.59:1. Ours carries real prose in
+      // .note, so it is lifted to #8c8c8c (4.9:1). The one deliberate deviation.
+      faint: "#8c8c8c",
+      // Chrome accent is #0078d4, which fails as text at 3.64:1. This is
+      // textLink.foreground, the blue VS Code itself uses for readable accents.
+      amber: "#3794ff",
+      amberInk: "#04111f",
+      mint: "#89d185",
+      purple: "#c586c0",
+      blue: "#569cd6",
+      rose: "#9cdcfe",
+      sel: "#04395e",
+      scrim: "rgb(0 0 0 / 0.6)",
+      shadow: "rgb(0 0 0 / 0.55)",
+    },
+    syntax: {
+      synKey: "#569cd6",
+      synStr: "#ce9178",
+      synFn: "#dcdcaa",
+      synNum: "#b5cea8",
+      synProp: "#9cdcfe",
+      synCom: "#6a9955",
+      synType: "#4ec9b0",
+    },
+  },
+  {
+    id: "vscode-light-modern",
+    name: "Light Modern",
+    author: "Microsoft · VS Code default",
+    appearance: "light",
+    blurb: "The light theme VS Code ships with, same borders-not-luminance chrome.",
+    tokens: {
+      bg: "#ffffff",
+      panel: "#f8f8f8",
+      rail: "#f8f8f8",
+      raise: "#e8e8e8",
+      line: "#e5e5e5",
+      fg: "#3b3b3b",
+      muted: "#5f5f5f",
+      faint: "#6b6b6b",
+      amber: "#005fb8",
+      amberInk: "#ffffff",
+      mint: "#116d41",
+      purple: "#af00db",
+      blue: "#0f62d0",
+      rose: "#a31515",
+      sel: "#cfe3ff",
+      scrim: "rgb(0 0 0 / 0.32)",
+      shadow: "rgb(0 0 0 / 0.16)",
+    },
+    syntax: {
+      synKey: "#0000ff",
+      synStr: "#a31515",
+      synFn: "#795e26",
+      synNum: "#098658",
+      synProp: "#001080",
+      synCom: "#008000",
+      synType: "#267f99",
+    },
+  },
   {
     id: "navy",
     name: "Workspace Navy",
@@ -356,7 +447,7 @@ export const themes: Theme[] = [
   },
 ];
 
-export const defaultThemeId = "navy";
+export const defaultThemeId = "vscode-dark-modern";
 
 export const themeIds = themes.map((t) => t.id);
 
@@ -366,9 +457,26 @@ export const themeById = (id: string | null | undefined): Theme =>
 /** Token key -> CSS custom property, e.g. `amberInk` -> `--amber-ink`. */
 export const cssVarName = (key: string) => `--${key.replace(/[A-Z]/g, (c) => `-${c.toLowerCase()}`)}`;
 
+export const resolveSyntax = (theme: Theme): SyntaxTokens => {
+  const t = theme.tokens;
+  const s = theme.syntax ?? {};
+  return {
+    synKey: s.synKey ?? t.purple,
+    synStr: s.synStr ?? t.mint,
+    synFn: s.synFn ?? t.blue,
+    synNum: s.synNum ?? t.amber,
+    synProp: s.synProp ?? t.rose,
+    synCom: s.synCom ?? t.faint,
+    synType: s.synType ?? t.mint,
+  };
+};
+
+/** Every custom property a theme sets: UI tokens plus resolved syntax. */
+export const resolvedTokens = (theme: Theme) => ({ ...theme.tokens, ...resolveSyntax(theme) });
+
 /** The tokens of one theme as a CSS declaration list, used by the bootstrap. */
 export const themeCssText = (theme: Theme) =>
-  Object.entries(theme.tokens)
+  Object.entries(resolvedTokens(theme))
     .map(([k, v]) => `${cssVarName(k)}:${v}`)
     .join(";");
 
@@ -378,4 +486,4 @@ export const THEME_STORAGE_KEY = "ide:theme";
 export const INSTALLED_STORAGE_KEY = "ide:themes:installed";
 
 /** Installed out of the box; everything else has to be installed to be used. */
-export const preinstalledIds = [defaultThemeId, "night-owl"];
+export const preinstalledIds = [defaultThemeId, "vscode-light-modern", "navy"];

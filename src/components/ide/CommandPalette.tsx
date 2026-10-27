@@ -36,7 +36,7 @@ export function CommandPalette() {
 }
 
 function Palette() {
-  const { setPaletteOpen, open, setPanel, toggleTerminal } = useIde();
+  const { setPaletteOpen, open, showPanel, toggleTerminal } = useIde();
   const [query, setQuery] = useState("");
   const [active, setActive] = useState(0);
   const [copied, setCopied] = useState(false);
@@ -51,13 +51,13 @@ function Palette() {
       file: f,
       run: () => open(f),
     })),
-    { id: "p-search", label: "Search everything", hint: "Find any line on the site", icon: <SearchIcon className="mx-1 size-4" />, run: () => setPanel("search") },
-    { id: "p-git", label: "Show experience as commits", hint: "Source control panel", icon: <BranchIcon className="mx-1 size-4" />, run: () => setPanel("git") },
-    { id: "p-ext", label: "Show skills", hint: "Extensions panel", icon: <BlocksIcon className="mx-1 size-4" />, run: () => setPanel("extensions") },
-    { id: "p-api", label: "Open API playground", hint: "Try a request", icon: <BracesIcon className="mx-1 size-4" />, run: () => setPanel("api") },
-    { id: "p-db", label: "Open database explorer", hint: "Inspect sample tables", icon: <DatabaseIcon className="mx-1 size-4" />, run: () => setPanel("database") },
-    { id: "p-settings", label: "Open IDE settings", hint: "Customize the workspace", icon: <GearIcon className="mx-1 size-4" />, run: () => setPanel("settings") },
-    { id: "p-ai", label: "Ask the AI assistant", hint: "About my work", icon: <SparkIcon className="mx-1 size-4" />, run: () => setPanel("assistant") },
+    { id: "p-search", label: "Search everything", hint: "Find any line on the site", icon: <SearchIcon className="mx-1 size-4" />, run: () => showPanel("search") },
+    { id: "p-git", label: "Show experience as commits", hint: "Source control panel", icon: <BranchIcon className="mx-1 size-4" />, run: () => showPanel("git") },
+    { id: "p-ext", label: "Show skills", hint: "Extensions panel", icon: <BlocksIcon className="mx-1 size-4" />, run: () => showPanel("extensions") },
+    { id: "p-api", label: "Open API playground", hint: "Try a request", icon: <BracesIcon className="mx-1 size-4" />, run: () => showPanel("api") },
+    { id: "p-db", label: "Open database explorer", hint: "Inspect sample tables", icon: <DatabaseIcon className="mx-1 size-4" />, run: () => showPanel("database") },
+    { id: "p-settings", label: "Open settings panel", hint: "Quick switches; settings.json has them all", icon: <GearIcon className="mx-1 size-4" />, run: () => showPanel("settings") },
+    { id: "p-ai", label: "Ask the AI assistant", hint: "About my work", icon: <SparkIcon className="mx-1 size-4" />, run: () => showPanel("assistant") },
     { id: "p-term", label: "Toggle terminal", hint: "Ctrl+`", icon: <TerminalIcon className="mx-1 size-4" />, run: toggleTerminal },
     {
       id: "p-copy",

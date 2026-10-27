@@ -9,6 +9,7 @@
    mechanism declarative and lets the bootstrap apply it before the first paint. */
 
 export type Settings = {
+  "editor.fontFamily": "vscode" | "fira";
   "editor.fontSize": number;
   "editor.lineHeight": number;
   "editor.lineNumbers": boolean;
@@ -58,6 +59,17 @@ export type SettingDef = Common &
   );
 
 export const settingDefs: readonly SettingDef[] = [
+  {
+    key: "editor.fontFamily",
+    label: "Font family",
+    description:
+      "vscode uses the fonts VS Code ships with — a system UI font for the chrome, Consolas or Menlo for file contents. fira uses Fira Code throughout.",
+    group: "Editor",
+    kind: "enum",
+    default: "vscode",
+    options: ["vscode", "fira"],
+    attr: "font",
+  },
   {
     key: "editor.fontSize",
     label: "Font size",

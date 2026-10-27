@@ -1,14 +1,12 @@
 "use client";
 
 import { person } from "@/content/profile";
-import { langLabel, navFiles } from "@/content/workspace";
+import { langLabel } from "@/content/workspace";
 import { useIde, type PanelId } from "./ide-state";
 import {
   BlocksIcon,
   BranchIcon,
-  CloseIcon,
   ErrorIcon,
-  FileMark,
   FilesIcon,
   MenuIcon,
   SearchIcon,
@@ -106,54 +104,6 @@ export function ActivityBar() {
         <TerminalIcon className="size-[1.375rem]" />
       </button>
     </nav>
-  );
-}
-
-/* ---------------------------------------------------------------- tabs */
-
-export function Tabs() {
-  const { tabs, open, closeTab, pathname } = useIde();
-  const pinnedCount = navFiles.length;
-
-  return (
-    <div role="tablist" aria-label="Open files" className="flex shrink-0 overflow-x-auto border-b border-line bg-panel [scrollbar-width:none]">
-      {tabs.map((file, i) => {
-        const active = file.href === pathname;
-        const canClose = i >= pinnedCount;
-        return (
-          <div
-            key={file.href}
-            className={`group relative flex h-10 shrink-0 items-center border-r border-line transition-colors ${
-              active ? "bg-bg text-fg" : "text-muted hover:bg-raise/50"
-            }`}
-          >
-            {active && <span className="absolute inset-x-0 top-0 h-0.5 bg-amber" aria-hidden="true" />}
-            <button
-              type="button"
-              role="tab"
-              aria-selected={active}
-              onClick={() => open(file)}
-              className="flex h-full items-center gap-1 pr-2 pl-2.5 text-[0.8125rem] whitespace-nowrap"
-            >
-              <FileMark lang={file.lang} className="!w-5" />
-              {file.name}
-            </button>
-            {canClose && (
-              <button
-                type="button"
-                onClick={() => closeTab(file.href)}
-                aria-label={`Close ${file.name}`}
-                className={`mr-1.5 grid size-5 place-items-center rounded hover:bg-raise ${
-                  active ? "opacity-100" : "opacity-0 group-hover:opacity-100 focus-visible:opacity-100"
-                }`}
-              >
-                <CloseIcon className="size-3.5" />
-              </button>
-            )}
-          </div>
-        );
-      })}
-    </div>
   );
 }
 

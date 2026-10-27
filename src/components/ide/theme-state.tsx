@@ -7,6 +7,7 @@ import {
   cssVarName,
   defaultThemeId,
   preinstalledIds,
+  resolvedTokens,
   themeById,
   themes,
   type Theme,
@@ -87,7 +88,7 @@ function commit(next: ThemeState) {
 /** Writes a theme's tokens onto <html> as inline custom properties. */
 export function applyTheme(theme: Theme) {
   const root = document.documentElement;
-  for (const [key, value] of Object.entries(theme.tokens)) {
+  for (const [key, value] of Object.entries(resolvedTokens(theme))) {
     root.style.setProperty(cssVarName(key), value);
   }
   // Native form controls, scrollbars and the caret follow this, not the tokens.

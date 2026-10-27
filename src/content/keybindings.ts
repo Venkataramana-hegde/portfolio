@@ -15,7 +15,13 @@ export type CommandId =
   | "panel.search"
   | "panel.scm"
   | "panel.extensions"
-  | "settings.open";
+  | "settings.open"
+  | "editor.close"
+  | "editor.reopen"
+  | "editor.next"
+  | "editor.prev"
+  | "editor.moveLeft"
+  | "editor.moveRight";
 
 export type Keybinding = {
   command: CommandId;
@@ -23,7 +29,7 @@ export type Keybinding = {
   label: string;
   /** The default chord, e.g. "Mod+Shift+E". */
   chord: string;
-  group: "Navigation" | "Panels" | "View";
+  group: "Navigation" | "Panels" | "View" | "Editor group";
 };
 
 export const keybindings: readonly Keybinding[] = [
@@ -35,9 +41,15 @@ export const keybindings: readonly Keybinding[] = [
   { command: "panel.search", label: "Show search", chord: "Mod+Shift+F", group: "Panels" },
   { command: "panel.scm", label: "Show source control", chord: "Mod+Shift+G", group: "Panels" },
   { command: "panel.extensions", label: "Show extensions", chord: "Mod+Shift+X", group: "Panels" },
+  { command: "editor.close", label: "Close editor", chord: "Alt+W", group: "Editor group" },
+  { command: "editor.reopen", label: "Reopen closed editor", chord: "Alt+Shift+T", group: "Editor group" },
+  { command: "editor.next", label: "Next editor", chord: "Alt+PageDown", group: "Editor group" },
+  { command: "editor.prev", label: "Previous editor", chord: "Alt+PageUp", group: "Editor group" },
+  { command: "editor.moveLeft", label: "Move editor left", chord: "Alt+Shift+ArrowLeft", group: "Editor group" },
+  { command: "editor.moveRight", label: "Move editor right", chord: "Alt+Shift+ArrowRight", group: "Editor group" },
 ];
 
-export const keybindingGroups = ["Navigation", "Panels", "View"] as const;
+export const keybindingGroups = ["Navigation", "Editor group", "Panels", "View"] as const;
 
 export const defaultChords = Object.fromEntries(keybindings.map((k) => [k.command, k.chord])) as Record<
   CommandId,
@@ -89,6 +101,10 @@ export function formatChord(chord: string): string {
       if (part === "Alt") return apple ? "⌥" : "Alt";
       if (part === "ArrowUp") return "↑";
       if (part === "ArrowDown") return "↓";
+      if (part === "ArrowLeft") return "←";
+      if (part === "ArrowRight") return "→";
+      if (part === "PageUp") return "PgUp";
+      if (part === "PageDown") return "PgDn";
       return part;
     })
     .join(apple ? " " : "+");

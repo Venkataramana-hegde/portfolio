@@ -13,25 +13,39 @@
 :root {
   color-scheme: dark;
 
-  --bg: #0a2036;        /* editor ground */
-  --panel: #07192a;     /* side panels, tab bar */
-  --rail: #050f1a;      /* activity bar, title bar */
-  --raise: #15375a;     /* hover / selected row */
-  --line: #1e3e5c;      /* every divider */
-  --fg: #e8eef5;
-  --muted: #8ba6c1;     /* secondary text, comments (6.5:1 on --bg) */
-  --faint: #6e8da8;     /* tertiary, line numbers (4.7:1 on --bg) */
+  /* VS Code ships a system UI font for the workbench and a monospace for the
+     editor. editor.fontFamily swaps both to Fira Code; see content/settings.ts. */
+  --font-ui: "Segoe WPC", "Segoe UI", system-ui, -apple-system, BlinkMacSystemFont, "Ubuntu", "Droid Sans", sans-serif;
+  --font-code: Consolas, "Courier New", Menlo, Monaco, "Droid Sans Mono", ui-monospace, monospace;
 
-  --amber: #f6a862;     /* active tab, primary action */
-  --amber-ink: #180f04;
-  --mint: #56d6ae;      /* strings, live, success */
-  --purple: #cf9ae2;
-  --blue: #5fa8ea;
-  --rose: #ed9a90;
+  --bg: #1f1f1f;        /* editor ground */
+  --panel: #181818;     /* side panels, tab bar */
+  --rail: #181818;      /* activity bar, title bar — same as panel, as VS Code does */
+  --raise: #2a2d2e;     /* hover / selected row */
+  --line: #2b2b2b;      /* every divider */
+  --fg: #cccccc;
+  --muted: #9d9d9d;     /* secondary text, comments (6.1:1 on --bg) */
+  --faint: #8c8c8c;     /* tertiary, line numbers (4.9:1 on --bg) */
 
-  --sel: #1d4a70;
-  --scrim: rgb(2 10 18 / 0.66);   /* mobile drawer backdrop */
-  --shadow: rgb(0 0 0 / 0.5);     /* cannot be black on a light ground */
+  --amber: #3794ff;     /* active state, primary action — VS Code textLink blue */
+  --amber-ink: #04111f;
+  --mint: #89d185;      /* live, success — VS Code git-added green */
+  --purple: #c586c0;
+  --blue: #569cd6;
+  --rose: #9cdcfe;
+
+  /* Syntax, separate from the chrome. VS Code Dark Modern / Dark+ values. */
+  --syn-key: #569cd6;
+  --syn-str: #ce9178;
+  --syn-fn: #dcdcaa;
+  --syn-num: #b5cea8;
+  --syn-prop: #9cdcfe;
+  --syn-com: #6a9955;
+  --syn-type: #4ec9b0;
+
+  --sel: #04395e;
+  --scrim: rgb(0 0 0 / 0.6);   /* mobile drawer backdrop */
+  --shadow: rgb(0 0 0 / 0.55);     /* cannot be black on a light ground */
 
   /* Settings defaults. The bootstrap overwrites these inline before first paint
      when the visitor has changed them; see content/settings.ts. */
@@ -60,8 +74,11 @@
   --color-purple: var(--purple);
   --color-blue: var(--blue);
   --color-rose: var(--rose);
-  --font-mono: var(--font-fira), ui-monospace, "Cascadia Code", Menlo, monospace;
-  --font-sans: var(--font-fira), ui-monospace, monospace;
+  --color-syn-key: var(--syn-key);
+  --color-syn-str: var(--syn-str);
+  --color-syn-type: var(--syn-type);
+  --font-mono: var(--font-code);
+  --font-sans: var(--font-ui);
 }
 
 html,
@@ -72,7 +89,7 @@ body {
 body {
   background: var(--bg);
   color: var(--fg);
-  font-family: var(--font-mono);
+  font-family: var(--font-ui);
   font-size: var(--ui-font-size);
   line-height: var(--ui-line-height);
   -webkit-font-smoothing: antialiased;
@@ -199,6 +216,8 @@ body {
 
 /* Readable column for prose pages. */
 .doc {
+  /* File contents, so it reads in the editor font, as a file does in VS Code. */
+  font-family: var(--font-code);
   max-width: 54rem;
   padding: var(--doc-pad) 1.25rem 5rem;
   display: flex;
@@ -304,6 +323,7 @@ body {
 /* ---------------------------------------------------------- code blocks */
 
 .code {
+  font-family: var(--font-code);
   font-size: calc(var(--ui-font-size) - 0.125rem);
   line-height: 1.75;
   counter-reset: line;
@@ -328,17 +348,19 @@ body {
   overflow-wrap: anywhere;
 }
 
-.t-key { color: var(--purple); }
-.t-str { color: var(--mint); }
-.t-fn { color: var(--blue); }
-.t-num { color: var(--amber); }
-.t-prop { color: var(--rose); }
-.t-com { color: var(--faint); }
+.t-key { color: var(--syn-key); }
+.t-str { color: var(--syn-str); }
+.t-fn { color: var(--syn-fn); }
+.t-num { color: var(--syn-num); }
+.t-prop { color: var(--syn-prop); }
+.t-com { color: var(--syn-com); }
+.t-type { color: var(--syn-type); }
 .t-punc { color: var(--muted); }
 
 /* ------------------------------------------------------------- terminal */
 
 .term-body {
+  font-family: var(--font-code);
   font-size: var(--term-font-size);
 }
 
@@ -388,6 +410,12 @@ body {
 
    Each rule below is the thing a switch in settings.json actually does. The
    attributes are written onto <html> by the bootstrap and by settings-state. */
+
+/* editor.fontFamily — Fira Code everywhere, the way this site shipped before */
+:root[data-font="fira"] {
+  --font-ui: var(--font-fira), ui-monospace, monospace;
+  --font-code: var(--font-fira), ui-monospace, "Cascadia Code", Menlo, monospace;
+}
 
 /* editor.fontLigatures */
 :root[data-ligatures="off"] body {

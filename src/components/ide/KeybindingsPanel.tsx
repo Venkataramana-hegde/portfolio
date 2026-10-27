@@ -142,10 +142,21 @@ export function KeybindingsPanel() {
           Reset all shortcuts
         </button>
 
-        <p className="mt-4 text-[0.6875rem] leading-snug text-faint">
-          A chord needs at least one modifier, so typing in the terminal never triggers a command. Browser keys like
-          reload, and Escape, Tab and Enter, are left alone on purpose.
-        </p>
+        <div className="mt-4 flex flex-col gap-2 text-[0.6875rem] leading-snug text-faint">
+          <p>
+            A chord needs at least one modifier, so typing in the terminal never triggers a command. Browser keys like
+            reload, and Escape, Tab and Enter, are left alone on purpose.
+          </p>
+          <p>
+            The editor-group shortcuts use Alt rather than Ctrl because a web page cannot intercept Ctrl+W, Ctrl+Shift+T
+            or Ctrl+PageDown — the browser claims those first.
+          </p>
+          <p>
+            <span className="text-amber">Known conflict:</span> in Firefox, Ctrl+Shift+E opens the Network Monitor and
+            cannot be overridden by a page. It is kept because it is the binding VS Code itself ships — rebind it above if you use
+            Firefox.
+          </p>
+        </div>
       </div>
     </div>
   );

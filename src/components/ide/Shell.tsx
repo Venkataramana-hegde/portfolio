@@ -1,7 +1,9 @@
 "use client";
 
 import { useEffect, useRef } from "react";
-import { ActivityBar, Hint, StatusBar, Tabs, TitleBar } from "./Chrome";
+import { ActivityBar, Hint, StatusBar, TitleBar } from "./Chrome";
+import { EmptyGroup } from "./EmptyGroup";
+import { Tabs } from "./Tabs";
 import { CommandPalette } from "./CommandPalette";
 import { Explorer } from "./Explorer";
 import { Extensions } from "./Extensions";
@@ -56,7 +58,7 @@ function SidePanel() {
 }
 
 function Workbench({ children }: { children: React.ReactNode }) {
-  const { drawerOpen, closeDrawer, terminalOpen, pathname } = useIde();
+  const { drawerOpen, closeDrawer, terminalOpen, pathname, groupEmpty } = useIde();
   const scrollRef = useRef<HTMLDivElement>(null);
 
   // Opening a file scrolls it to the top, unless the link targets a heading.
@@ -83,7 +85,9 @@ function Workbench({ children }: { children: React.ReactNode }) {
         <div className="editor">
           <Tabs />
           <div id="content" ref={scrollRef} className="editor-scroll" tabIndex={-1}>
-            {children}
+            {/* Closing every tab leaves the group empty, as it does in an editor.
+                The route is untouched, so opening anything restores it. */}
+            {groupEmpty ? <EmptyGroup /> : children}
           </div>
           {terminalOpen && <TerminalPane />}
         </div>

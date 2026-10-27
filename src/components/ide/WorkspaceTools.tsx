@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { person, projects } from "@/content/profile";
+import { searchIndex } from "@/content/search";
 import { settingByKey } from "@/content/settings";
 import { themes } from "@/content/themes";
 import { findFile } from "@/content/workspace";
@@ -16,9 +17,10 @@ export function ApiPlayground() {
   const [method, setMethod] = useState("GET");
   const [path, setPath] = useState("/api/profile");
   const [sent, setSent] = useState(false);
-  const response = path.includes("projects") ? { count: projects.length, items: projects.map((p) => p.name) } : { name: person.name, role: person.role, company: person.currentCompany };
+  const [response, setResponse] = useState<unknown>(null);
+  async function send() { const res = await fetch(path, { method }); setResponse(res.ok ? { status: res.status, body: await res.json() } : { status: res.status, error: "Request failed" }); setSent(true); }
   return <ToolShell title="API playground" subtitle="Send a safe, local request against portfolio data.">
-    <div className="flex gap-1"><select value={method} onChange={(e) => setMethod(e.target.value)} className="rounded border border-line bg-bg px-2 text-[0.75rem] text-amber"><option>GET</option><option>POST</option></select><input value={path} onChange={(e) => setPath(e.target.value)} className="min-w-0 flex-1 rounded border border-line bg-bg px-2 text-[0.75rem] text-fg" /><button className={button} onClick={() => setSent(true)}>Send</button></div>
+    <div className="flex gap-1"><select value={method} onChange={(e) => setMethod(e.target.value)} className="rounded border border-line bg-bg px-2 text-[0.75rem] text-amber"><option>GET</option><option>POST</option></select><input value={path} onChange={(e) => setPath(e.target.value)} className="min-w-0 flex-1 rounded border border-line bg-bg px-2 text-[0.75rem] text-fg" /><button className={button} onClick={send}>Send</button></div>
     <div className="mt-3 rounded border border-line bg-rail p-2"><div className="mb-1 text-[0.625rem] text-faint">200 OK · application/json</div><pre className="whitespace-pre-wrap text-[0.6875rem] text-mint">{sent ? JSON.stringify(response, null, 2) : "// press Send to run the request"}</pre></div>
   </ToolShell>;
 }
@@ -124,7 +126,7 @@ export function IdeSettings() {
 
 export function PortfolioAssistant() {
   const [question, setQuestion] = useState(""); const [answer, setAnswer] = useState("Ask me about projects, experience, or how to get in touch.");
-  function ask() { const q = question.toLowerCase(); setAnswer(q.includes("contact") || q.includes("email") ? `You can reach ${person.givenName} at ${person.email}.` : q.includes("project") ? `There are ${projects.length} projects in the workspace. Try the Projects file or database explorer.` : `${person.name} is a ${person.role} at ${person.currentCompany}, focused on reliable product software.`); }
+  function ask() { const q = question.toLowerCase(); const matches = searchIndex.filter((hit) => hit.text.toLowerCase().includes(q)).slice(0, 2); setAnswer(q.includes("contact") || q.includes("email") ? `You can reach ${person.givenName} at ${person.email}.` : matches.length ? `${matches.map((m) => `“${m.text}”`).join("\n")}\n\nSources: ${matches.map((m) => m.path).join(", ")}` : q.includes("project") ? `There are ${projects.length} projects in the workspace.` : `${person.name} is a ${person.role} at ${person.currentCompany}.`); }
   return <ToolShell title="AI portfolio assistant" subtitle="A local assistant grounded in the information on this site."><div className="rounded border border-line bg-rail p-2 text-[0.75rem] text-muted"><SparkIcon className="mb-1 size-4 text-amber" />{answer}</div><div className="mt-2 flex gap-1"><input value={question} onChange={(e) => setQuestion(e.target.value)} onKeyDown={(e) => e.key === "Enter" && ask()} placeholder="Ask about my work…" className="min-w-0 flex-1 rounded border border-line bg-bg px-2 text-[0.75rem] text-fg" /><button className={button} onClick={ask}>Ask</button></div></ToolShell>;
 }
 

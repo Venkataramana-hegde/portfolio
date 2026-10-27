@@ -1,14 +1,18 @@
 "use client";
 
 import { useState } from "react";
-import { cssVarName, themes, preinstalledIds, type Theme } from "@/content/themes";
+import { cssVarName, resolvedTokens, themes, preinstalledIds, type Theme } from "@/content/themes";
 import { CheckIcon, SearchIcon } from "./Icons";
 import { useTheme } from "./theme-state";
 
 /* Themes, shown the way an editor shows a marketplace — and the buttons do the
    thing they say. Install writes to localStorage and the whole site repaints.
-   There is deliberately no fake progress spinner: applying a theme is seventeen
-   custom properties and a repaint, so it is instant, and pretending otherwise
+   Install and apply are separate, as they are in a real marketplace: installing
+   adds a theme to the ones you own, and "Set as theme" is a second, deliberate
+   click. Uninstalling one you are wearing drops you back to the default.
+
+   There is deliberately no fake progress spinner: applying a theme is a handful
+   of custom properties and a repaint, so it is instant, and pretending otherwise
    would be the kind of theatre the rest of this chrome avoids. Credit is real:
    most of these palettes are other people's work. */
 
@@ -16,7 +20,7 @@ const filters = ["All", "Dark", "Light"] as const;
 
 /** A real preview: a miniature workbench painted with that theme's own tokens. */
 function Preview({ theme }: { theme: Theme }) {
-  const t = theme.tokens;
+  const t = resolvedTokens(theme);
   const style = Object.fromEntries(
     Object.entries(t).map(([k, v]) => [cssVarName(k), v]),
   ) as React.CSSProperties;
@@ -39,12 +43,12 @@ function Preview({ theme }: { theme: Theme }) {
           <span className="h-full w-10 border-r" style={{ background: t.bg, borderColor: t.line, boxShadow: `inset 0 2px 0 ${t.amber}` }} />
         </div>
         <pre className="px-1.5 pt-1 text-[0.4375rem] leading-[1.45]" style={{ color: t.muted }}>
-          <span style={{ color: t.purple }}>const</span> <span style={{ color: t.blue }}>role</span> ={" "}
-          <span style={{ color: t.mint }}>&quot;engineer&quot;</span>
+          <span style={{ color: t.synKey }}>const</span> <span style={{ color: t.synProp }}>role</span> ={" "}
+          <span style={{ color: t.synStr }}>&quot;engineer&quot;</span>
           {"\n"}
-          <span style={{ color: t.faint }}>{"// honest numbers only"}</span>
+          <span style={{ color: t.synCom }}>{"// honest numbers only"}</span>
           {"\n"}
-          <span style={{ color: t.rose }}>years</span>: <span style={{ color: t.amber }}>4</span>
+          <span style={{ color: t.synFn }}>years</span>: <span style={{ color: t.synNum }}>4</span>
           <span style={{ color: t.amber }} className="caret ml-0.5 !h-[0.55em] !w-[0.3em]" />
         </pre>
       </div>
@@ -137,10 +141,7 @@ export function ThemeMarketplace() {
                 {!installed && (
                   <button
                     type="button"
-                    onClick={() => {
-                      installTheme(theme.id);
-                      setTheme(theme.id);
-                    }}
+                    onClick={() => installTheme(theme.id)}
                     className="rounded border border-transparent bg-amber px-2 py-1 text-[0.6875rem] font-semibold text-amber-ink hover:brightness-110"
                   >
                     Install
@@ -151,7 +152,7 @@ export function ThemeMarketplace() {
                   <button
                     type="button"
                     onClick={() => setTheme(theme.id)}
-                    className="rounded border border-line bg-bg px-2 py-1 text-[0.6875rem] text-muted hover:border-amber hover:text-fg"
+                    className="rounded border border-amber/60 bg-bg px-2 py-1 text-[0.6875rem] font-medium text-amber hover:bg-amber hover:text-amber-ink"
                   >
                     Set as theme
                   </button>
