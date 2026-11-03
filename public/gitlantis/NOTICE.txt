@@ -1,0 +1,4 @@
+Gitlantis assets (3D models, ocean texture, waves.mp3, horn.ogg, logo) and the scene design
+come from the Gitlantis VS Code extension by Brian Njogu, https://github.com/liltrendi/gitlantis
+Licensed under the Apache License, Version 2.0 (http://www.apache.org/licenses/LICENSE-2.0).
+boat.glb was decompressed from Draco and quantized (KHR_mesh_quantization); geometry is otherwise unchanged.

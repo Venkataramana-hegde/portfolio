@@ -13,7 +13,7 @@ const PROMPT = "visitor@portfolio";
 const COMMANDS = [
   "help", "ls", "open", "cat", "cd", "whoami", "about", "projects", "skills",
   "git", "experience", "contact", "email", "resume", "github", "linkedin",
-  "neofetch", "pwd", "date", "clear", "history", "sudo", "echo",
+  "neofetch", "pets", "pwd", "date", "clear", "history", "sudo", "echo",
 ] as const;
 
 const HELP: [string, string][] = [
@@ -25,14 +25,15 @@ const HELP: [string, string][] = [
   ["git log", "my roles as commits"],
   ["whoami", "the short version"],
   ["neofetch", "system info, the usual"],
+  ["pets", "adopt a pet and throw it a ball"],
   ["contact / email", "ways to reach me"],
   ["resume", "open the PDF"],
   ["github / linkedin", "open a profile"],
   ["clear", "clear the screen"],
 ];
 
-export function Terminal() {
-  const { open, toggleTerminal } = useIde();
+export function Terminal({ tabs }: { tabs?: React.ReactNode }) {
+  const { open, toggleTerminal, openPets } = useIde();
   const [entries, setEntries] = useState<Entry[]>([]);
   const [input, setInput] = useState("");
   const [history, setHistory] = useState<string[]>([]);
@@ -284,6 +285,11 @@ export function Terminal() {
         ));
         break;
 
+      case "pets":
+        openPets();
+        push("out", "Opened the Pets tab. Adopt one and throw it a ball.");
+        break;
+
       case "pwd":
         push("out", `/${workspaceName}`);
         break;
@@ -382,10 +388,12 @@ export function Terminal() {
   return (
     <section className="flex h-full flex-col bg-panel" aria-label="Terminal">
       <div className="flex h-9 shrink-0 items-center gap-4 border-b border-line px-3">
-        <span className="flex items-center gap-2 text-[0.75rem] font-semibold text-fg">
-          <TerminalIcon className="size-4" />
-          Terminal
-        </span>
+        {tabs ?? (
+          <span className="flex items-center gap-2 text-[0.75rem] font-semibold text-fg">
+            <TerminalIcon className="size-4" />
+            Terminal
+          </span>
+        )}
         <span className="hidden text-[0.75rem] text-faint sm:inline">
           bash — type <span className="text-amber">help</span> · Tab completes · ↑ repeats
         </span>

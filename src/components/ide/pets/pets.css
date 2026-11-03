@@ -1,0 +1,17 @@
+.pets-field{position:relative;overflow:hidden;background:var(--panel)}
+.pets-bg,.pets-fg{position:absolute;inset:0;pointer-events:none;background-repeat:repeat-x;background-position:left bottom;background-size:auto auto}
+.pets-bg{background-image:var(--bg)}.pets-fg{background-image:var(--fg);z-index:3}
+.pets-layer{position:absolute;inset:0;z-index:2;pointer-events:none}
+.pets-pet{position:absolute;left:0;bottom:var(--floor);padding:0;border:0;background:none;cursor:pointer;pointer-events:auto;will-change:transform}
+.pets-pet:focus-visible{outline:2px solid var(--amber);outline-offset:2px;border-radius:4px}
+.pets-pet img{display:block;transform-origin:50% 100%;image-rendering:pixelated;user-select:none;-webkit-user-drag:none}
+.pets-tag{position:absolute;left:50%;bottom:calc(var(--ph,70px) + 2px);transform:translateX(-50%);padding:1px 6px;border-radius:999px;background:#000a;color:#fff;font-size:11px;line-height:1.4;white-space:nowrap;pointer-events:none}
+.pets-field[data-names=false] .pets-tag{display:none}
+.pets-heart{position:absolute;left:50%;bottom:var(--ph,70px);color:#ff5d7a;font-size:16px;opacity:0;pointer-events:none}
+.pets-pet.is-loved .pets-heart{animation:pets-heart 1.2s ease-out}
+@keyframes pets-heart{0%{opacity:1;transform:translate(-50%,0) scale(.7)}100%{opacity:0;transform:translate(-50%,-34px) scale(1.2)}}
+.pets-ball{position:absolute;left:0;bottom:var(--floor);width:14px;height:14px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#ff9a9a,#d93a3a 60%,#8f1d1d);box-shadow:0 2px 3px #0006;display:none;will-change:transform}
+.pets-ball[data-phase=fly],.pets-ball[data-phase=ground]{display:block}
+.pets-empty{position:absolute;inset:auto 0 50% 0;z-index:4;margin:0 auto;width:max-content;max-width:min(34rem,calc(100% - 24px));padding:8px 14px;border-radius:8px;background:color-mix(in srgb,var(--panel) 88%,transparent);text-align:center;font-size:13px;line-height:1.5;color:var(--muted);transform:translateY(50%)}
+.pets-empty b{color:var(--fg);font-weight:600}
+@media(prefers-reduced-motion:reduce){.pets-pet.is-loved .pets-heart{animation-duration:.01s}}

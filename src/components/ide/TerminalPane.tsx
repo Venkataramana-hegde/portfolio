@@ -1,13 +1,17 @@
 "use client";
 
 import { useRef, useState } from "react";
+import { BottomTabs } from "./BottomTabs";
+import { useIde } from "./ide-state";
+import { PetsPanel } from "./pets/PetsPanel";
 import { Terminal } from "./Terminal";
 
 const MIN = 120;
 const MAX_FRACTION = 0.7;
 
-/** The terminal, with a drag handle on its top edge to resize it. */
+/** The bottom panel (Terminal and Pets tabs), with a drag handle on its top edge to resize it. */
 export function TerminalPane() {
+  const { bottomTab } = useIde();
   const [height, setHeight] = useState(200);
   const dragging = useRef(false);
 
@@ -40,7 +44,7 @@ export function TerminalPane() {
       <div
         role="separator"
         aria-orientation="horizontal"
-        aria-label="Resize the terminal"
+        aria-label="Resize the panel"
         tabIndex={0}
         onPointerDown={onPointerDown}
         onPointerMove={onPointerMove}
@@ -49,7 +53,9 @@ export function TerminalPane() {
         className="h-1 cursor-row-resize border-t border-line bg-line/40 transition-colors hover:bg-amber/60"
       />
       <div className="h-[calc(100%-0.25rem)]">
-        <Terminal />
+        {/* Both tabs stay mounted so the terminal history and the pets keep going while the other is shown. */}
+        <div className={bottomTab === "terminal" ? "h-full" : "hidden"}><Terminal tabs={<BottomTabs />} /></div>
+        <div className={bottomTab === "pets" ? "h-full" : "hidden"}><PetsPanel active={bottomTab === "pets"} tabs={<BottomTabs />} /></div>
       </div>
     </div>
   );

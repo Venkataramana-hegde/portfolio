@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { person } from "@/content/profile";
 import { files, filePath, type WorkspaceFile } from "@/content/workspace";
 import { useIde } from "./ide-state";
-import { BlocksIcon, BranchIcon, BracesIcon, DatabaseIcon, ExternalIcon, FileMark, GearIcon, SearchIcon, SparkIcon, TerminalIcon } from "./Icons";
+import { BlocksIcon, BranchIcon, BracesIcon, DatabaseIcon, ExternalIcon, FileMark, GearIcon, PawIcon, SearchIcon, SparkIcon, TerminalIcon } from "./Icons";
 
 type Action = {
   id: string;
@@ -36,7 +36,7 @@ export function CommandPalette() {
 }
 
 function Palette() {
-  const { setPaletteOpen, open, showPanel, toggleTerminal } = useIde();
+  const { setPaletteOpen, open, showPanel, toggleTerminal, openPets } = useIde();
   const [query, setQuery] = useState("");
   const [active, setActive] = useState(0);
   const [copied, setCopied] = useState(false);
@@ -58,6 +58,7 @@ function Palette() {
     { id: "p-db", label: "Open database explorer", hint: "Inspect sample tables", icon: <DatabaseIcon className="mx-1 size-4" />, run: () => showPanel("database") },
     { id: "p-settings", label: "Open settings panel", hint: "Quick switches; settings.json has them all", icon: <GearIcon className="mx-1 size-4" />, run: () => showPanel("settings") },
     { id: "p-ai", label: "Ask the AI assistant", hint: "About my work", icon: <SparkIcon className="mx-1 size-4" />, run: () => showPanel("assistant") },
+    { id: "p-pets", label: "Show pets", hint: "Adopt one and throw it a ball", icon: <PawIcon className="mx-1 size-4" />, run: openPets },
     { id: "p-term", label: "Toggle terminal", hint: "Ctrl+`", icon: <TerminalIcon className="mx-1 size-4" />, run: toggleTerminal },
     {
       id: "p-copy",

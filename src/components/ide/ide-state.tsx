@@ -22,6 +22,8 @@ import {
 
 export type PanelId = "explorer" | "search" | "git" | "extensions" | "api" | "database" | "settings" | "assistant";
 
+export type BottomTab = "terminal" | "pets";
+
 type IdeApi = {
   panel: PanelId;
   setPanel: (p: PanelId) => void;
@@ -35,6 +37,11 @@ type IdeApi = {
   terminalOpen: boolean;
   toggleTerminal: () => void;
   setTerminalOpen: (open: boolean) => void;
+  /** Which tab the bottom panel shows. */
+  bottomTab: BottomTab;
+  setBottomTab: (tab: BottomTab) => void;
+  /** Opens the bottom panel on its Pets tab. */
+  openPets: () => void;
   paletteOpen: boolean;
   setPaletteOpen: (open: boolean) => void;
   /** The open editor group, in tab order. Empty is a valid state. */
@@ -109,6 +116,7 @@ export function IdeProvider({ children }: { children: React.ReactNode }) {
   // desktop where there is room, closed on phones.
   const [terminalChoice, setTerminalChoice] = useState<boolean | null>(null);
   const terminalOpen = terminalChoice ?? isDesktop;
+  const [bottomTab, setBottomTab] = useState<BottomTab>("terminal");
 
   const { tabs: openTabs, closed } = useTabs();
 
@@ -150,6 +158,10 @@ export function IdeProvider({ children }: { children: React.ReactNode }) {
 
   const toggleTerminal = useCallback(() => setTerminalChoice((v) => !(v ?? isDesktopNow())), []);
   const setTerminalOpen = useCallback((next: boolean) => setTerminalChoice(next), []);
+  const openPets = useCallback(() => {
+    setBottomTab("pets");
+    setTerminalChoice(true);
+  }, []);
 
   const toggleSide = useCallback(() => {
     if (isDesktopNow()) setSideOpen((v) => !v);
@@ -244,6 +256,9 @@ export function IdeProvider({ children }: { children: React.ReactNode }) {
     terminalOpen,
     toggleTerminal,
     setTerminalOpen,
+    bottomTab,
+    setBottomTab,
+    openPets,
     paletteOpen,
     setPaletteOpen,
     tabs,

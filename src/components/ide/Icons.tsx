@@ -49,6 +49,16 @@ export const DatabaseIcon = (p: P) => <S {...p}><ellipse cx="12" cy="5.5" rx="7"
 export const GearIcon = (p: P) => <S {...p}><circle cx="12" cy="12" r="3" /><path d="M19 12a7 7 0 0 0-.1-1.2l2-1.5-2-3.4-2.3 1a7 7 0 0 0-2-1.2L14.3 3h-4.6l-.4 2.7a7 7 0 0 0-2 1.2l-2.3-1-2 3.4 2 1.5a7 7 0 0 0 0 2.4l-2 1.5 2 3.4 2.3-1a7 7 0 0 0 2 1.2l.4 2.7h4.6l.4-2.7a7 7 0 0 0 2-1.2l2.3 1 2-3.4-2-1.5c.1-.4.1-.8.1-1.2Z" /></S>;
 export const SparkIcon = (p: P) => <S {...p}><path d="m12 3 1.3 5.7L19 10l-5.7 1.3L12 17l-1.3-5.7L5 10l5.7-1.3zM19 16l.6 2.4L22 19l-2.4.6L19 22l-.6-2.4L16 19l2.4-.6z" /></S>;
 
+export const PawIcon = (p: P) => (
+  <S {...p}>
+    <circle cx="6.5" cy="10" r="1.75" />
+    <circle cx="10" cy="6" r="1.75" />
+    <circle cx="14" cy="6" r="1.75" />
+    <circle cx="17.5" cy="10" r="1.75" />
+    <path d="M12 12c-2.5 0-5 2.6-5 5 0 1.6 1.4 2.5 3 2.2.7-.1 1.3-.4 2-.4s1.3.3 2 .4c1.6.3 3-.6 3-2.2 0-2.4-2.5-5-5-5z" />
+  </S>
+);
+
 export const TerminalIcon = (p: P) => (
   <S {...p}>
     <rect x="3" y="4.5" width="18" height="15" rx="2" />
