@@ -4,6 +4,8 @@ import { useState } from "react";
 import { extensions, type Extension } from "@/content/profile";
 import { CheckIcon, SearchIcon, StarIcon } from "./Icons";
 import { ThemeMarketplace } from "./ThemeMarketplace";
+import { findFile } from "@/content/workspace";
+import { useIde } from "./ide-state";
 
 /* Skills, shown the way an editor shows installed extensions. The numbers are
    real: `projects` counts the things on this site that use it, and `since` is
@@ -138,10 +140,11 @@ function Skills() {
    installed (skills, which cannot be installed or removed because they are
    facts) and what you can install (themes, which genuinely install). */
 
-const sections = ["Skills", "Themes"] as const;
+const sections = ["Skills", "Themes", "Experiences"] as const;
 
 export function Extensions() {
   const [section, setSection] = useState<(typeof sections)[number]>("Skills");
+  const { open } = useIde();
 
   return (
     <div className="flex flex-col">
@@ -163,7 +166,17 @@ export function Extensions() {
         ))}
       </div>
 
-      <div className="pt-3">{section === "Skills" ? <Skills /> : <ThemeMarketplace />}</div>
+      <div className="pt-3">{section === "Skills" ? <Skills /> : section === "Themes" ? <ThemeMarketplace /> : (
+        <div className="px-3 pb-4">
+          <div className="rounded border border-line bg-bg p-3">
+            <div className="flex items-start gap-3">
+              <span className="grid size-9 shrink-0 place-items-center rounded bg-blue/15 text-xl text-blue" aria-hidden="true">◈</span>
+              <div><h3 className="text-[0.8125rem] font-semibold text-fg">Gitlantis</h3><p className="mt-1 text-[0.6875rem] leading-relaxed text-muted">Explore this portfolio as an ocean of folders and files.</p></div>
+            </div>
+            <button type="button" onClick={() => { const file = findFile("gitlantis"); if (file) open(file); }} className="mt-3 rounded bg-amber px-3 py-1.5 text-[0.75rem] font-semibold text-amber-ink hover:opacity-90">Launch Gitlantis</button>
+          </div>
+        </div>
+      )}</div>
     </div>
   );
 }

@@ -23,7 +23,7 @@ export function OpenFileLink({ cmd, children }: { cmd: string; children: React.R
 
 /** The main calls to action, used on the hello and contact pages. */
 export function QuickActions() {
-  const { setPanel, setTerminalOpen } = useIde();
+  const { setPanel, setTerminalOpen, open } = useIde();
   return (
     <div className="flex flex-wrap items-center gap-2">
       <a href={`mailto:${person.email}`} className="btn btn-amber">
@@ -45,6 +45,10 @@ export function QuickActions() {
         LinkedIn
         <span className="sr-only">(opens in a new tab)</span>
       </a>
+      <button type="button" onClick={() => { const file = findFile("gitlantis"); if (file) open(file); }} className="btn">
+        <span aria-hidden="true">◈</span>
+        Sail the codebase
+      </button>
       <button
         type="button"
         onClick={() => {

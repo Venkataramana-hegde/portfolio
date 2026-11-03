@@ -29,6 +29,7 @@ export const files: WorkspaceFile[] = [
   { name: "_experience.log", dir: "src", href: "/experience", lang: "log", cmd: "experience", title: "Experience", blurb: "Every role as a commit, newest first" },
   { name: "_contact-me.ts", dir: "src", href: "/contact", lang: "ts", cmd: "contact", title: "Contact me", blurb: "Email, LinkedIn and GitHub" },
   { name: "_projects.json", dir: "src/projects", href: "/projects", lang: "json", cmd: "projects", title: "Projects", blurb: "Everything I have shipped" },
+  { name: "gitlantis.tsx", dir: "src", href: "/gitlantis", lang: "tsx", cmd: "gitlantis", title: "Gitlantis", blurb: "Sail through this portfolio as a 3D codebase" },
   ...projects.map(
     (p): WorkspaceFile => ({
       name: `${p.slug}.tsx`,
